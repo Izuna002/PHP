@@ -1,0 +1,62 @@
+```php
+<?php
+session_start();
+
+$loggedInUser = isset($_SESSION['firstName']) ? $_SESSION['firstName'] : null;
+
+if (isset($_POST['submitBtn'])) {
+    if ($loggedInUser) {
+        $message = "$loggedInUser is already logged in. Wait for them to logout first.";
+    } else {
+        $firstName = $_POST['firstName'];
+        $password = md5($_POST['password']);
+
+        $_SESSION['firstName'] = $firstName;
+        $_SESSION['password'] = $password;
+
+        header('Location: index.php');
+        exit();
+    }
+}
+
+if (isset($_GET['logout'])) {
+    session_unset();
+    header('Location: index.php');
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Fill in the input fields below</h1>
+
+    <?php if (isset($message)): ?>
+        <p style="color: blue;"><?php echo $message; ?></p> 
+    <?php endif; ?>
+
+    <h2>
+        User logged in:
+        <?php echo $loggedInUser ? $loggedInUser : ""; ?>       
+    </h2>
+
+    <h2>
+        User password: 
+        <?php echo isset($_SESSION['password']) ? $_SESSION['password'] : ""; ?>        
+    </h2>
+
+    <a href="?logout=1">Logout</a>
+
+    <form action="" method="POST">
+        <p><input type="text" placeholder="First name here" name="firstName"></p>
+        <p><input type="password" placeholder="Password here" name="password"></p>
+        <p><input type="submit" value="Submit" name="submitBtn"></p>
+    </form>
+</body>
+</html>
+```
